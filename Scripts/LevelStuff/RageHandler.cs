@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class RageHandler : MonoBehaviour {
+	protected CuttlefishMovement cuttlefish;
+	
 	public float currRage = 0;
 	public float maxRange = 100;
 	public float currGoal = 0;
@@ -13,6 +15,8 @@ public class RageHandler : MonoBehaviour {
 	
 	void Start()
 	{
+		cuttlefish = GameObject.FindGameObjectWithTag("Player").GetComponent<CuttlefishMovement>();
+
 		float height = Screen.height/divisorForRageMeter;
 		rageMeterBack.pixelInset = new Rect(0,Screen.height-height,Screen.width,height);
 		rageMeterBack.color = Color.black;
@@ -61,6 +65,8 @@ public class RageHandler : MonoBehaviour {
 	//Method to call to determine (returns current rage)
 	public float alterRage(float rageAlteration)
 	{
+		if (rageAlteration < 0) cuttlefish.damageFlash();
+
 		currGoal+=rageAlteration;
 		
 		if(currGoal<0)

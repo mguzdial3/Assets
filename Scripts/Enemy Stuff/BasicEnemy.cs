@@ -13,10 +13,19 @@ public class BasicEnemy : MonoBehaviour {
 	protected const int NORMAL_STATE=0; //What the fish does normally
 	protected const int ATTACK_STATE = 3; //If the fish has a different behavior when attacking
 	protected const int PAUSED_STATE = 2; //If the fish should be paused
+
+	public int damageFlashNumTimes = 2;
+	private int damageCounter = 0;
+	private int flashTimes = 0;
+	private bool damaged = false;
+
+	//for talking to children of this object
+	public Component[] enemyPieces;
 	
 	// Use this for initialization
 	public virtual void Start () {
 		cuttlefish = GameObject.FindGameObjectWithTag("Player").GetComponent<CuttlefishMovement>();
+		enemyPieces = GetComponentsInChildren<Renderer>();
 	}
 	
 	// Update is called once per frame
@@ -38,6 +47,23 @@ public class BasicEnemy : MonoBehaviour {
 		else if(gameState==ATTACK_STATE)
 		{
 			AttackGameplay();
+		}
+
+		//flash enemy if hit
+		if (damaged) {
+			damageCounter ++;
+			if (damageCounter == 4) {
+				foreach(Renderer piece in enemyPieces) {
+					if (flashTimes == damageFlashNumTimes) {
+						damaged = false;
+						piece.enabled = true;
+					} else {
+						piece.enabled = !piece.enabled;
+					}
+				}
+				flashTimes ++;
+				damageCounter = 0;
+			}
 		}
 		
 		
@@ -96,10 +122,17 @@ public class BasicEnemy : MonoBehaviour {
 		
 		if(screenRect.Contains(screenPos))
 		{
+			foreach(Renderer piece in enemyPieces) {
+					piece.enabled = false;
+			}
+			damaged = true;
+			flashTimes = 0;
+			damageCounter = 0;
 			hitPoints-=damage;
 			
 			if(hitPoints<=0)
 			{
+				cuttlefish.score += (int)pointsWorth;
 				OnDeath();
 			}
 		}

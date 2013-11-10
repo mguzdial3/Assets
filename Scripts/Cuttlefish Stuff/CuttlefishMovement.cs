@@ -25,13 +25,24 @@ public class CuttlefishMovement : MonoBehaviour {
 	public RageHandler rageHandler;
 	public CuttlefishShooter shooter;
 	
-	public GUIText text;
+	public GUIText powerupText;
 	
 	private float shootPeriod = 0.25f;
 	private float shootPCounter = 0.0f;
+
+	public Component[] playerPieces;
+	public int damageFlashNumTimes = 2;
+	private bool damaged = false;
+	private int flashTimes = 0;
+	private int damageCounter = 0;
+
+	public GUIText scoreText;
+	public int score = 0;
 	
 	// Use this for initialization
 	void Start () {
+		playerPieces = GetComponentsInChildren<Renderer>();
+
 		goalRotation = Quaternion.Euler(new Vector3(0,180,0));
 		facingRight = true;
 		origSpeedVal = speed;
@@ -44,9 +55,15 @@ public class CuttlefishMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-		if((text.text)!=(""+shooter.getShooter()))
+		if((powerupText.text)!=(""+shooter.getShooter()))
 		{
-			text.text=""+	shooter.getShooter();
+			powerupText.text=""+	shooter.getShooter();
+		}
+
+		if((scoreText.text)!=(""+score)) 
+		{
+			Debug.Log("changin score to " + score);
+			scoreText.text=""+score;
 		}
 		
 		shootPeriod = 0.25f+(rageHandler.getRatio());
@@ -55,6 +72,8 @@ public class CuttlefishMovement : MonoBehaviour {
 		float maxSpeedBoost = 5.0f;
         moveDirection = transform.TransformDirection(moveDirection);
         moveDirection *= (speed+maxSpeedBoost*rageHandler.getRatio());
+		
+		
 		
 		
 		if(Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)
@@ -123,8 +142,35 @@ public class CuttlefishMovement : MonoBehaviour {
 		{
 			transform.position = newPos;
 		}
+
+		// flash character if hit
+		if (damaged) {
+			damageCounter ++;
+			if (damageCounter == 4) {
+				foreach(Renderer piece in playerPieces) {
+					if (flashTimes == damageFlashNumTimes) {
+						damaged = false;
+						piece.enabled = true;
+					} else {
+						piece.enabled = !piece.enabled;
+					}
+				}
+				flashTimes ++;
+				damageCounter = 0;
+			}
+		}
 	}
+
 	RageHandler getRageHandler(){
 		return rageHandler;
+	}
+
+	public void damageFlash(){
+		foreach(Renderer piece in playerPieces) {
+			piece.enabled = false;
+		}
+		damaged = true;
+		flashTimes = 0;
+		damageCounter = 0;
 	}
 }
