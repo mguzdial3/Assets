@@ -4,9 +4,9 @@ using System.Collections;
 //Basic type of attacking enemy
 public class AttackEnemy : BasicEnemy {
 	public float damageAmount; //The amount of damage this enemy does to the player
-	private float timer; //Timer for movement
-	private float timerMax = 1.0f; //Max amount of time for movement
-	private Vector3 currDirection; //The current direction we're moving in
+	protected float timer; //Timer for movement
+	protected float timerMax = 1.0f; //Max amount of time for movement
+	protected Vector3 currDirection; //The current direction we're moving in
 	
 	public Animation myAnimation;
 	
