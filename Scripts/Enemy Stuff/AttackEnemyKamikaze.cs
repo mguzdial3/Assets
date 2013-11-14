@@ -11,6 +11,12 @@ public class AttackEnemyKamikaze : AttackEnemy {
 	}
 	protected override void NormalGameplay ()
 	{
+		//look at the Cuttlefish Code
+		var faceCuttlefishRotation = Quaternion.LookRotation(cuttlefish.transform.position - transform.position, Vector3.up);
+   		faceCuttlefishRotation.x = 0.0f;
+		faceCuttlefishRotation.y = 0.0f;
+		faceCuttlefishRotation.z = faceCuttlefishRotation.z;
+		transform.rotation = Quaternion.Slerp(transform.rotation, faceCuttlefishRotation, Time.deltaTime * 8);
 		
 		//Determine if we should change the currDirection yet
 		if(timer<timerMax)
