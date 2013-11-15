@@ -8,7 +8,8 @@ public class RageHandler : MonoBehaviour {
 	public float maxRange = 100;
 	public float currGoal = 0;
 	
-	public GUITexture rageMeter, rageMeterBack;
+	public GUITexture rageMeter, rageMeterBack, coolDownMarker;
+	public int markerWidth = 10;
 	public float divisorForRageMeter = 6;
 	public float rageMeterWidthPercent = 0.8f;
 	public float speed=3.0f;
@@ -22,7 +23,10 @@ public class RageHandler : MonoBehaviour {
 		rageMeterBack.color = Color.black;
 		rageMeter.pixelInset = new Rect(Screen.width*(1f-rageMeterWidthPercent)/2f,Screen.height-height+(height*(1f-rageMeterWidthPercent)/2f),getCurrentRageMeterWidth(),height*rageMeterWidthPercent);
 		rageMeter.color = Color.white;
-		
+		// place the cool down mark at the 80% mark of the rage meter
+		coolDownMarker.pixelInset = new Rect((float)(Screen.width-(0.2*Screen.width)), Screen.height-height+(height*(1f-rageMeterWidthPercent)/2f), markerWidth, height);
+		coolDownMarker.transform.position = new Vector3(0,0,5);
+		coolDownMarker.active = false;
 		currGoal = currRage;
 		
 	}
@@ -111,7 +115,13 @@ public class RageHandler : MonoBehaviour {
 	private Color getCurrRageMeterColor()
 	{
 		float val = (1f-((maxRange-currRage)/maxRange));
-		
+		Debug.Log("color value" + val);
+		if (val > 0.8f) {
+			Debug.Log("switching the coolDownMarker on");
+			coolDownMarker.active = true;
+		} else {
+			coolDownMarker.active = false;
+		}
 		return Color.Lerp(new Color(1.0f,0.3f,0.3f,1.0f),Color.red,val);
 	}
 	
