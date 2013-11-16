@@ -62,7 +62,7 @@ public class CuttlefishMovement : MonoBehaviour {
 
 		if((scoreText.text)!=(""+score)) 
 		{
-			Debug.Log("changin score to " + score);
+			//Debug.Log("changin score to " + score);
 			scoreText.text=""+score;
 		}
 		
@@ -71,7 +71,10 @@ public class CuttlefishMovement : MonoBehaviour {
 		Vector3 moveDirection = new Vector3(-1*Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f);
 		float maxSpeedBoost = 5.0f;
         moveDirection = transform.TransformDirection(moveDirection);
-        moveDirection *= (speed+maxSpeedBoost*rageHandler.getRatio());
+
+		//speed = origSpeedVal+maxSpeedBoost*rageHandler.getRatio();
+
+        moveDirection *= (speed);
 		
 		
 		

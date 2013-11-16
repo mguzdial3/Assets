@@ -5,7 +5,7 @@ public class RageHandler : MonoBehaviour {
 	protected CuttlefishMovement cuttlefish;
 	
 	public float currRage = 0;
-	public float maxRange = 100;
+	public float maxRage = 100;
 	public float currGoal = 0;
 	
 	public GUITexture rageMeter, rageMeterBack, coolDownMarker;
@@ -33,7 +33,7 @@ public class RageHandler : MonoBehaviour {
 	
 	public float getRatio()
 	{
-		return currRage/maxRange;
+		return currRage/maxRage;
 	}
 	
 	void Update()
@@ -41,8 +41,8 @@ public class RageHandler : MonoBehaviour {
 		if(currRage!=currGoal)
 		{
 			float diff = Mathf.Abs(currRage-currGoal);
-			
-			
+
+			/**
 			if(diff>0.1f)
 			{
 				currRage+= (diff)*Time.deltaTime*speed;
@@ -51,14 +51,26 @@ public class RageHandler : MonoBehaviour {
 			{
 				currRage = currGoal;
 			}
+			*/
+			if(diff>1f)
+			{
 			
-			if(currRage>currGoal)
+				if(currRage>currGoal)
+				{
+					currRage=currGoal;
+				}
+				else if(currRage<currGoal)
+				{
+					currRage+=Time.deltaTime*speed*2;
+				}
+			}
+			else
 			{
 				currRage = currGoal;
 			}
 			
 			
-			if(currRage>0 && currRage<maxRange)
+			if(currRage>0 && currRage<maxRage)
 			{
 				resetRageMeterVisual();
 			}
@@ -80,12 +92,12 @@ public class RageHandler : MonoBehaviour {
 			
 		}
 		
-		if(currGoal>maxRange)
+		if(currGoal>maxRage)
 		{
-			currGoal = maxRange;
+			currGoal = maxRage;
 		}
 		
-		if(currRage>0 && currRage<maxRange)
+		if(currRage>0 && currRage<maxRage)
 		{
 			resetRageMeterVisual();
 		}
@@ -108,14 +120,14 @@ public class RageHandler : MonoBehaviour {
 	
 	private float getCurrentRageMeterWidth()
 	{
-		return ((1f-((maxRange-currRage)/maxRange))*rageMeterWidthPercent*Screen.width)+5f;
+		return ((1f-((maxRage-currRage)/maxRage))*rageMeterWidthPercent*Screen.width)+5f;
 	}
 	
 	
 	private Color getCurrRageMeterColor()
 	{
-		float val = (1f-((maxRange-currRage)/maxRange));
-		Debug.Log("color value" + val);
+		float val = (1f-((maxRage-currRage)/maxRage));
+		//Debug.Log("color value" + val);
 		if (val > 0.8f) {
 			Debug.Log("switching the coolDownMarker on");
 			coolDownMarker.active = true;

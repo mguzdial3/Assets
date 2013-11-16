@@ -5,6 +5,7 @@ public class BasicEnemy : MonoBehaviour {
 	//Link to cuttlefish
 	protected CuttlefishMovement cuttlefish; //Reference to the player
 	public float hitPoints=10f; //Max hitpoints of this fish
+	protected float origHitPoints;
 	public float pointsWorth = 1.0f; //The amount of rage points killing this fish gives you/takes away if you miss it
 	public float speed, speedSeenPlayer; //Two different speeds
 	
@@ -21,11 +22,26 @@ public class BasicEnemy : MonoBehaviour {
 
 	//for talking to children of this object
 	public Component[] enemyPieces;
-	
+
+	protected float redTimer = 0;
+	protected float redTimerMax = 0.2f;
+	protected Color[] origColors;
+
 	// Use this for initialization
 	public virtual void Start () {
 		cuttlefish = GameObject.FindGameObjectWithTag("Player").GetComponent<CuttlefishMovement>();
 		enemyPieces = GetComponentsInChildren<Renderer>();
+		origColors = new Color[enemyPieces.Length];
+
+		for(int i =0; i<enemyPieces.Length; i++)
+		{
+			if(enemyPieces[i].renderer!=null)
+			{
+				origColors[i] = enemyPieces[i].renderer.material.color;
+			}
+		}
+
+		origHitPoints = hitPoints;
 	}
 	
 	// Update is called once per frame
@@ -86,6 +102,23 @@ public class BasicEnemy : MonoBehaviour {
 		float maxSpeed = 5.0f;
 		
 		transform.position+=Vector3.left*Time.deltaTime*(speed+maxSpeed*cuttlefish.rageHandler.getRatio());
+
+		if(redTimer>0)
+		{
+			redTimer-=Time.deltaTime;
+
+			if(redTimer<=0)
+			{
+				for(int i =0; i<enemyPieces.Length; i++)
+				{
+					if(enemyPieces[i].renderer!=null)
+					{
+						enemyPieces[i].renderer.material.color = origColors[i];	
+					}
+				}
+			}
+		}
+	
 	}
 	
 	
@@ -117,14 +150,19 @@ public class BasicEnemy : MonoBehaviour {
 	//Called to do damage to this fish, calls OnDeath() if hitpoints too low
 	public virtual void doDamage(float damage)
 	{
-		Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+		Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position+Vector3.right*2);
 		Rect screenRect  = new Rect(0,0,Screen.width,Screen.height);
 		
 		if(screenRect.Contains(screenPos))
 		{
-			foreach(Renderer piece in enemyPieces) {
-					piece.enabled = false;
+			for(int i =0; i<enemyPieces.Length; i++)
+			{
+				if(enemyPieces[i].renderer!=null)
+				{
+					enemyPieces[i].renderer.material.color = Color.Lerp(origColors[i],Color.red,	0.3f+0.5f*((origHitPoints - hitPoints)/origHitPoints));	
+				}
 			}
+			redTimer = redTimerMax;
 			damaged = true;
 			flashTimes = 0;
 			damageCounter = 0;
@@ -141,8 +179,8 @@ public class BasicEnemy : MonoBehaviour {
 	//What to do when this fish dies
 	protected virtual void OnDeath()
 	{
-		cuttlefish.rageHandler.alterRage(pointsWorth*Time.deltaTime);
-		
+		cuttlefish.rageHandler.alterRage(pointsWorth);
+
 		Destroy(gameObject);
 	}
 	
