@@ -6,7 +6,7 @@ public class CuttlefishShooter : MonoBehaviour {
 	protected int shooterType = 1;
 	
 	//Called when the player wants to shoot
-	public virtual void shoot(GameObject beam, RageHandler rageHandler, Vector3 moveDirection,  bool facingRight)
+	public virtual void shoot(GameObject beam, RageHandler rageHandler, Vector3 moveDirection,  bool raging)
 	{
 		
 		if(!audio.isPlaying)
@@ -19,11 +19,13 @@ public class CuttlefishShooter : MonoBehaviour {
 		float bulletSizeMax = 5.0f;
 		Bullet b = (Instantiate(beam,gameObject.GetComponent<CuttlefishMovement>().beamPosition.transform.position+difference,transform.rotation) as GameObject).GetComponent<Bullet>();
 			
-		//b.transform.localScale*=(1+rageHandler.getRatio()*bulletSizeMax);
+
+		if(raging)
+		{
+			b.transform.localScale*=(10f);
 		
-		//b.transform.parent = transform.parent;
-		
-		
+			b.particleSystem.startSize*= (3f);
+		}
 		
 		b.origPosition = gameObject.GetComponent<CuttlefishMovement>().beamPosition.transform.position;
 		

@@ -14,7 +14,7 @@ public class RandomShooter : CuttlefishShooter {
 	}
 	
 	//shoots a single radial burst of bullets
-	public override void shoot (GameObject beam, RageHandler rageHandler, Vector3 moveDirection, bool facingRight)
+	public override void shoot (GameObject beam, RageHandler rageHandler, Vector3 moveDirection, bool raging)
 	{
 		
 		if(!audio.isPlaying)
@@ -72,10 +72,19 @@ public class RandomShooter : CuttlefishShooter {
 			xVal *= Random.Range(-4f, 4f);
 			yVal *= Random.Range(-4f, 4f);
 
+			if(raging)
+			{
+				b.transform.localScale*=(10f);
+				
+				b.particleSystem.startSize*= (3f);
+			}
+
 			b.mvmntVector = new Vector3( xVal, yVal, 0);
 			b.mvmntVector.Normalize();
 
 		}
+
+
 		
 	}
 	

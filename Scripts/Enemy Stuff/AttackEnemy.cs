@@ -14,6 +14,7 @@ public class AttackEnemy : BasicEnemy {
 	protected List<AttackEnemy> otherAttackers;
 
 	private bool beenOnScreen;
+	private float rotationSpeed = 3.0f;
 
 	public override void Start ()
 	{
@@ -61,12 +62,15 @@ public class AttackEnemy : BasicEnemy {
 
 						if(diff.sqrMagnitude<5f)
 						{
-							currDirection+=diff.normalized;
+							currDirection+=diff.normalized*2;
 						}
 
 					}
 				}
 			}
+
+
+
 		
 		}
 		
@@ -81,6 +85,25 @@ public class AttackEnemy : BasicEnemy {
 		
 		//Move this enemy
 
+		if(Mathf.Abs(currDirection.normalized.y)>0.4f)
+		{
+
+			Quaternion neededRotation = Quaternion.LookRotation(currDirection, Vector3.up);
+			transform.rotation = Quaternion.Slerp(transform.rotation, neededRotation, Time.deltaTime * rotationSpeed);
+
+			float z = transform.eulerAngles.z;
+			transform.eulerAngles = new Vector3(0,0,z);
+
+		}
+		else
+		{
+			Quaternion neededRotation = Quaternion.LookRotation(Vector3.right, Vector3.up);
+			transform.rotation = Quaternion.Slerp(transform.rotation, neededRotation, Time.deltaTime * rotationSpeed);
+			
+			float z = transform.eulerAngles.z;
+			transform.eulerAngles = new Vector3(0,0,z);
+
+		}
 		Vector3 newPos = 
 		transform.position+currDirection.normalized*speedSeenPlayer*Time.deltaTime;
 
@@ -134,7 +157,7 @@ public class AttackEnemy : BasicEnemy {
 		if(other.collider.tag == "Player")
 		{
 			//Do damage to cuttlefish
-			cuttlefish.rageHandler.alterRage(-1*damageAmount*Time.deltaTime);
+			cuttlefish.rageHandler.alterRage(-1*damageAmount);
 			//Push Cuttlefish away
 			cuttlefish.transform.position+=rigidbody.velocity;
 		}

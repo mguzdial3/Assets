@@ -142,7 +142,7 @@ public class BasicEnemy : MonoBehaviour {
 	//Called when the enemy goes off the screen to the left
 	protected virtual void Escape()
 	{
-		cuttlefish.rageHandler.alterRage(-1*pointsWorth*Time.deltaTime);
+		cuttlefish.rageHandler.alterRage(-1*pointsWorth);
 		
 		Destroy(gameObject);
 	}

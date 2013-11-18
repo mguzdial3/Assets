@@ -5,8 +5,9 @@ public class EnemyController : MonoBehaviour {
 	public GameObject[] enemyPrefabs;
 	public Transform top, bottom;
 	
-	
+	private int test = 0;
 	public float timerMax = 4.0f;
+	private float staticGeneration = 25.0f;
 	private float timer;
 	public int maxNumEnemies = 4;
 	private RageHandler rageHandler;
@@ -18,76 +19,147 @@ public class EnemyController : MonoBehaviour {
 	
 	void Update()
 	{
-		if(timer<timerMax)
-		{
+		if(timer<staticGeneration && test < 6){
+			
 			timer+=Time.deltaTime*Random.Range(0.7f,0.9f);
-		}
-		else
-		{
-			timer=0;
-			
-			//Instantiate
-			int enemyWaveType = Random.Range(0,enemyPrefabs.Length);
-			int numEnemies = Random.Range(1,maxNumEnemies+1);
-			
 			Vector3 difference = bottom.position-top.position;
 			
-			//Normal enemy
-			if(enemyWaveType==0)
-			{
-
-			}
-			else if(enemyWaveType==1) //Police Enemy
-			{
-				if(rageHandler.getRatio()<0.2f)
+			if(timer > 1.5 && timer <2.0f && test <1 ){
+				for(int i =0; i<3; i++)
 				{
-					numEnemies=1;	
+					float amnt = ((float)i/(float)3)+Random.Range(0,0.5f);
+					Vector3 pos = top.position+difference*amnt;
+					Instantiate(enemyPrefabs[0],pos,transform.rotation);
 				}
-				else if(rageHandler.getRatio()>0.9f)
-				{
-					numEnemies=maxNumEnemies+2;
-				}
+				test = 1;
 			}
-			
-			else if(enemyWaveType==2) //Powerup Enemy
-			{
-				numEnemies =1;	
-			}
-			else if(enemyWaveType==3) //Speed Enemy
-			{
-				if(rageHandler.getRatio()<0.2f)
+			else if(timer > 4.5f && timer <5.0f && test < 2){
+				for(int i =0; i<1; i++)
 				{
-					numEnemies=1;	
+					float amnt = ((float)i/(float)1)+Random.Range(0,0.5f);
+					Vector3 pos = top.position+difference*amnt;
+					Instantiate(enemyPrefabs[0],pos,transform.rotation);
 				}
-				else if(rageHandler.getRatio()>0.9f)
-				{
-					numEnemies=maxNumEnemies+2;
-				}
+				test = 2;
 			}
-			else if(enemyWaveType==4) //Tough Enemy
-			{
-				if(rageHandler.getRatio()<0.2f)
+			else if(timer > 8.5f && timer <9.0f && test < 3){
+				for(int i =0; i<2; i++)
 				{
-					enemyWaveType=0;	
-				}	
-				else if(rageHandler.getRatio()<0.9f)
-				{
-					numEnemies=Random.Range(1,3);
+					float amnt = ((float)i/(float)2)+Random.Range(0,0.5f);
+					Vector3 pos = top.position+difference*amnt;
+					Instantiate(enemyPrefabs[2],pos,transform.rotation);
 				}
+				test = 3;
 			}
-			
-			
-			
-			for(int i =0; i<numEnemies; i++)
+			else if(timer >13.5f && timer <14.0f && test < 4){
+				for(int i =0; i<1; i++)
+				{
+					float amnt = ((float)i/(float)3)+Random.Range(0,0.5f);
+					Vector3 pos = top.position+difference*amnt;
+					Instantiate(enemyPrefabs[1],pos,transform.rotation);
+				}
+				test = 4;
+			}
+			else if(timer > 18.5f && timer < 19.0f && test < 5){
+				for(int i =0; i<3; i++)
+				{
+					float amnt = ((float)i/(float)1)+Random.Range(0,0.5f);
+					Vector3 pos = top.position+difference*amnt;
+					Instantiate(enemyPrefabs[1],pos,transform.rotation);
+				}
+				test = 5;
+			}
+			else if(timer > 24.5f && timer <25.0f && test < 6){
+				for(int i =0; i<2; i++)
+				{
+					float amnt = ((float)i/(float)2)+Random.Range(0,0.5f);
+					Vector3 pos = top.position+difference*amnt;
+					Instantiate(enemyPrefabs[3],pos,transform.rotation);
+				}
+				test = 6;
+			}
+		}
+		else{
+			if(timer<timerMax)
 			{
-				float amnt = ((float)i/(float)numEnemies)+Random.Range(0,0.5f);
+				timer+=Time.deltaTime*Random.Range(0.7f,0.9f);
+			}
+			else
+			{
+				timer=0;
 				
-				Vector3 pos = top.position+difference*amnt;
+				//Instantiate
+				int enemyWaveType = Random.Range(0,enemyPrefabs.Length);
+				int numEnemies = Random.Range(1,maxNumEnemies+1);
 				
-				Instantiate(enemyPrefabs[enemyWaveType],pos,transform.rotation);
+				Vector3 difference = bottom.position-top.position;
+				
+				//Normal enemy
+				if(enemyWaveType==0)
+				{
+					
+				}
+				else if(enemyWaveType==1) //Police Enemy
+				{
+					if(rageHandler.getRatio()<0.2f)
+					{
+						numEnemies=1;	
+					}
+					else if(rageHandler.getRatio()>0.9f)
+					{
+						numEnemies=maxNumEnemies+2; //changed from maxNumEnemies+2
+					}
+				}
+				
+				else if(enemyWaveType==2) //Powerup Enemy
+				{
+					numEnemies =1;	
+				}
+				else if(enemyWaveType==3) //Speed Enemy
+				{
+					if(rageHandler.getRatio()<0.7f)
+					{
+						numEnemies=1;	
+					}
+					else
+					{
+						if(numEnemies>2)
+						{
+							numEnemies = 2;
+						}
+					}
+					/**
+					else if(rageHandler.getRatio()>0.9f)
+					{
+						numEnemies=maxNumEnemies+2;  //maxNumEnemies+2
+					}
+					*/
+				}
+				else if(enemyWaveType==4) //Tough Enemy
+				{
+					if(rageHandler.getRatio()<0.2f)
+					{
+						enemyWaveType=0;	
+					}	
+					else if(rageHandler.getRatio()<0.9f)
+					{
+						numEnemies=Random.Range(1,3);
+					}
+				}
+				
+				
+				
+				for(int i =0; i<numEnemies; i++)
+				{
+					float amnt = ((float)i/(float)numEnemies)+Random.Range(0,0.5f);
+					
+					Vector3 pos = top.position+difference*amnt;
+					
+					Instantiate(enemyPrefabs[enemyWaveType],pos,transform.rotation);
+				}
+				
+				
 			}
-			
-			
 		}
 	}
 }

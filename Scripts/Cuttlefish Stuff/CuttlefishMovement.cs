@@ -25,7 +25,9 @@ public class CuttlefishMovement : MonoBehaviour {
 	public RageHandler rageHandler;
 	public CuttlefishShooter shooter;
 	
-	public GUIText powerupText;
+	public GUITexture powerupIcon;
+	public Texture[] powerupImages;
+	private int currNumber;
 	
 	private float shootPeriod = 0.25f;
 	private float shootPCounter = 0.0f;
@@ -38,6 +40,10 @@ public class CuttlefishMovement : MonoBehaviour {
 
 	public GUIText scoreText;
 	public int score = 0;
+
+	public bool raging;
+
+	public Transform monsterBody;
 	
 	// Use this for initialization
 	void Start () {
@@ -54,10 +60,22 @@ public class CuttlefishMovement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-		if((powerupText.text)!=(""+shooter.getShooter()))
+
+		if(raging)
 		{
-			powerupText.text=""+	shooter.getShooter();
+			audio.pitch = 0.1f;
+		}
+		else
+		{
+			audio.pitch = 1f;
+		}
+
+
+
+		if(currNumber!=(shooter.getShooter()))
+		{
+			powerupIcon.texture = powerupImages[shooter.getShooter()-1];
+			currNumber = shooter.getShooter();
 		}
 
 		if((scoreText.text)!=(""+score)) 
@@ -72,7 +90,7 @@ public class CuttlefishMovement : MonoBehaviour {
 		float maxSpeedBoost = 5.0f;
         moveDirection = transform.TransformDirection(moveDirection);
 
-		//speed = origSpeedVal+maxSpeedBoost*rageHandler.getRatio();
+		speed = origSpeedVal+maxSpeedBoost*rageHandler.getRatio();
 
         moveDirection *= (speed);
 		
@@ -105,7 +123,7 @@ public class CuttlefishMovement : MonoBehaviour {
 			
 			shootPCounter += Time.deltaTime;
 			if(shootPCounter < shootPeriod){
-				shooter.shoot(beam,rageHandler, moveDirection, facingRight);
+				shooter.shoot(beam,rageHandler, moveDirection, raging);
 			}
 			else if (shootPCounter < shootPeriod + 0.2f){
 			}
@@ -143,7 +161,17 @@ public class CuttlefishMovement : MonoBehaviour {
 		
 		if(screenRect.Contains(screenPos))
 		{
-			transform.position = newPos;
+
+			if(!raging)
+			{
+				transform.position = newPos;
+			}
+			else
+			{
+				monsterBody.position+=Vector3.right*Input.GetAxis("Horizontal")*Time.deltaTime*0.7f;
+				monsterBody.position+=Vector3.up*Input.GetAxis("Vertical")*Time.deltaTime*0.7f;
+			}
+
 		}
 
 		// flash character if hit

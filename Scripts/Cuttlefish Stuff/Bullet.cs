@@ -24,7 +24,7 @@ public class Bullet : MonoBehaviour {
 		//Cheat for now to link damage and size/rage
 		//damage = transform.localScale.x;
 		if(rageHandler != null){
-			damage = 1+rageHandler.getRatio();
+			damage = 1+rageHandler.getRatio()*transform.localScale.x;
 		}
 	}
 	
